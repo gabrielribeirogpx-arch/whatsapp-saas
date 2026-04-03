@@ -21,7 +21,7 @@ Backend multi-tenant para atendimento e disparo via WhatsApp Cloud API (Meta), c
    ```
 3. Rode a API:
    ```bash
-   uvicorn app.main:app --reload
+   python -m uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
    ```
 
 ## Multi-tenant
@@ -37,3 +37,10 @@ Todos os endpoints protegidos por tenant usam o header `X-Tenant-Id`.
 - `GET /api/sse/conversations`
 - `GET /api/settings/meta`
 - `PUT /api/settings/meta`
+
+
+## Deploy no Railway
+Use o start command abaixo para evitar erro de PATH do `uvicorn`:
+```bash
+python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+```
