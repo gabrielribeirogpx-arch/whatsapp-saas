@@ -16,14 +16,25 @@ app = FastAPI(title=settings.app_name)
 @app.on_event("startup")
 def on_startup() -> None:
     logger.info("Starting application setup")
-    Base.metadata.create_all(bind=engine)
-    with SessionLocal() as db:
-        existing = db.scalar(select(Tenant.id).limit(1))
-        if not existing:
-            db.add(Tenant(name="Tenant Demo"))
-            db.commit()
-            logger.info("Created default tenant")
-    logger.info("Startup setup finished")
+    print("[startup] FastAPI application initialization started", flush=True)
+    try:
+        Base.metadata.create_all(bind=engine)
+        with SessionLocal() as db:
+            existing = db.scalar(select(Tenant.id).limit(1))
+            if not existing:
+                db.add(Tenant(name="Tenant Demo"))
+                db.commit()
+                logger.info("Created default tenant")
+        logger.info("Startup setup finished")
+        print("[startup] FastAPI application initialized successfully", flush=True)
+    except Exception:
+        logger.exception("Startup setup failed; API will continue running for health checks")
+        print("[startup] Startup setup failed; check logs for details", flush=True)
+
+
+@app.get("/")
+def health():
+    return {"status": "ok"}
 
 
 @app.get("/health")
