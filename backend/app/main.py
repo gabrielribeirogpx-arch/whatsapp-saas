@@ -1,3 +1,8 @@
-from app.main import app
+from fastapi import FastAPI
 
-__all__ = ["app"]
+app = FastAPI()
+
+
+@app.get("/")
+def health():
+    return {"status": "ok"}
